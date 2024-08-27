@@ -6,7 +6,7 @@ import { mainnet } from "viem/chains";
 import { registerRoutes } from "./api/simple-router.js";
 import { MultichainWatcher } from "./utils/multichain-watcher.js";
 import { PersistentJson } from "./utils/persistent-json.js";
-import { ReservedStorage, Storage } from "./types/storage.js";
+import { ReservedStorage, Storage, UsersStorage } from "./types/storage.js";
 import { watchReserved } from "./event-watchers/Reserved.js";
 import { historySync } from "./utils/history-sync.js";
 import { OEPReserveContract } from "./contracts/OEPReserve.js";
@@ -29,6 +29,7 @@ async function start() {
   await storageManager.init({ dir: "storage" });
   const storage: Storage = {
     reserved: new PersistentJson<ReservedStorage>("reserved", []),
+    users: new PersistentJson<UsersStorage>("users", {}),
   };
 
   multichainWatcher.forEach((contractWatcher) => {
