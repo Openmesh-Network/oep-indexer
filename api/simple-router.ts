@@ -2,7 +2,6 @@ import { Express, Response, json } from "express";
 
 import { Storage } from "../types/storage.js";
 import { replacer } from "../utils/json.js";
-import { isAddress } from "viem";
 import { normalizeAddress } from "../utils/normalize-address.js";
 import { publicClients } from "../utils/chain-cache.js";
 import { createUserIfNotExists } from "../event-watchers/userHelpers.js";
@@ -27,7 +26,7 @@ export function registerRoutes(app: Express, storage: Storage) {
   app.get(basePath + "users", async function (req, res) {
     try {
       if (req.header("Authorization") !== process.env.USERS_SECRET) {
-        return malformedRequest(res, "invalid request secret");
+        return malformedRequest(res, "Invalid request secret");
       }
 
       const users = await storage.users.get();
@@ -48,12 +47,12 @@ export function registerRoutes(app: Express, storage: Storage) {
       const signature = req.body.signature;
       const valid = await Promise.all(
         Object.values(publicClients).map((publicClient) =>
-          publicClient.verifyMessage({ address: account, message: `DCI metadata: ${metadata}`, signature: signature })
+          publicClient.verifyMessage({ address: account, message: `OEP metadata: ${metadata}`, signature: signature })
         )
       );
       if (!valid.some((b) => b)) {
         // No single chain that approved this signature
-        return malformedRequest(res, "signature is not valid");
+        return malformedRequest(res, "Signature is not valid");
       }
 
       await storage.users.update((users) => {
