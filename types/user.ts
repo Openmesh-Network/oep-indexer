@@ -6,5 +6,6 @@ export interface User {
     entity?: string;
     URL?: string;
     country?: string;
+    referredBy?: string;
   };
 }
